@@ -1,0 +1,56 @@
+Sub pair_plot()
+
+Dim r As Range
+Dim title_axis_r As Range
+Dim title_r As Range
+Dim c1 As Long
+Dim c2 As Long
+Dim ch As Chart
+Dim start As String
+
+
+Set title_r = Range("B1:g1") 'заголовки диаграммы
+Set title_axis_r = Range("B2:g2") 'заголовки осей
+Set r = Range("B3:g24") 'данные
+
+
+'topPos = 50 'начальная позиция по вертикали
+'leftPos = 50 'начальная позиция по горизонтали
+
+start = "b28" 'начальная ячейка для построения графика
+topPos = Range(start).Top 'координата Top начальная ячейка для построения графика
+leftPos = Range(start).Left 'координата Left начальная ячейка для построения графика
+
+For c1 = 1 To r.Columns.Count
+    For c2 = c1 + 1 To r.Columns.Count
+        If c1 <> c2 Then
+            Set ch = ActiveSheet.Shapes.AddChart(Width:=300, Height:=200, Left:=leftPos, Top:=topPos).Chart
+            ch.ChartType = xlXYScatter
+            ch.SetSourceData Source:=Union(r.Columns(c1), r.Columns(c2))
+            
+            ch.HasTitle = True 'включаем Имя диаграммы
+            ch.ChartTitle.Text = title_r.Columns(c1).Cells(1, 1).Value 'Имя диаграммы
+            
+            ch.HasLegend = False 'выключаем отображение легенды
+            'ch.HasLegend = True 'включаем отображение легенды
+            'ch.Legend.Position = xlLegendPositionBottom 'устанавливаем расположение легенды внизу
+            'ch.Legend.Position = xlLegendPositionRight 'устанавливаем расположение легенды справа
+            'ch.Legend.Font.Size = 12 'устанавливаем размер шрифта для легенды
+
+            ch.Axes(xlCategory).HasTitle = True 'включаем отображение заголовка оси X
+            ch.Axes(xlCategory).AxisTitle.Characters.Text = title_axis_r.Columns(c1).Cells(1, 1).Value 'устанавливаем текст заголовка оси X
+        
+            ch.Axes(xlValue).HasTitle = True 'включаем отображение заголовка оси Y
+            ch.Axes(xlValue).AxisTitle.Orientation = xlHorizontal 'направления текста на горизонтальный
+            ch.Axes(xlValue).AxisTitle.Characters.Text = title_axis_r.Columns(c2).Cells(1, 1).Value 'устанавливаем текст заголовка оси Y
+            
+            topPos = topPos + 210 'увеличиваем значение по вертикали для следующей диаграммы
+        End If
+    Next c2
+    leftPos = leftPos + 310 'увеличиваем значение по горизонтали для следующей пары столбцов
+    'topPos = 50 'сбрасываем значение по вертикали для следующей пары столбцов
+    topPos = Range(start).Top 'сбрасываем значение по вертикали для следующей пары столбцов
+    
+Next c1
+
+End Sub
