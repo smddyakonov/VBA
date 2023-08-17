@@ -3,15 +3,27 @@ Sub pair_plot()
 Dim r As Range
 Dim title_axis_r As Range
 Dim title_r As Range
-Dim c1 As Long
-Dim c2 As Long
+Dim c1 As Long 'индекс первой колонки из пары
+Dim c2 As Long 'индекс второй колонки из пары
 Dim ch As Chart
 Dim start As String
+Dim start_col As String
+Dim finish_col As String
+Dim title_r_str As String
+Dim title_axis_r_str As String
+Dim r_str As String
 
 
-Set title_r = Range("B1:g1") 'заголовки диаграммы
-Set title_axis_r = Range("B2:g2") 'заголовки осей
-Set r = Range("B3:g24") 'данные
+start_col = "B" 'стартовая колонка
+finish_col = "J" 'финишная колонка
+
+title_r_str = start_col + "1" + ":" + finish_col + "1" 'заголовки диаграммы в виде строки
+title_axis_r_str = start_col + "2" + ":" + finish_col + "2" 'заголовки осей в виде строки
+r_str = start_col + "3" + ":" + finish_col + "24" 'данные в виде строки
+
+Set title_r = Range(title_r_str) 'заголовки диаграммы
+Set title_axis_r = Range(title_axis_r_str) 'заголовки осей
+Set r = Range(r_str) 'данные
 
 
 'topPos = 50 'начальная позиция по вертикали
@@ -29,7 +41,8 @@ For c1 = 1 To r.Columns.Count
             ch.SetSourceData Source:=Union(r.Columns(c1), r.Columns(c2))
             
             ch.HasTitle = True 'включаем Имя диаграммы
-            ch.ChartTitle.Text = title_r.Columns(c1).Cells(1, 1).Value 'Имя диаграммы
+            ch.ChartTitle.Text = title_axis_r.Columns(c1).Cells(1, 1).Value + title_axis_r.Columns(c2).Cells(1, 1).Value 'Имя диаграммы
+
             
             ch.HasLegend = False 'выключаем отображение легенды
             'ch.HasLegend = True 'включаем отображение легенды
@@ -45,8 +58,10 @@ For c1 = 1 To r.Columns.Count
             ch.Axes(xlValue).AxisTitle.Characters.Text = title_axis_r.Columns(c2).Cells(1, 1).Value 'устанавливаем текст заголовка оси Y
             
             topPos = topPos + 210 'увеличиваем значение по вертикали для следующей диаграммы
+        
         End If
     Next c2
+    
     leftPos = leftPos + 310 'увеличиваем значение по горизонтали для следующей пары столбцов
     'topPos = 50 'сбрасываем значение по вертикали для следующей пары столбцов
     topPos = Range(start).Top 'сбрасываем значение по вертикали для следующей пары столбцов
