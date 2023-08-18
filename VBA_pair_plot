@@ -51,7 +51,7 @@ For c1 = 1 To r.Columns.Count
             ch.SetSourceData Source:=Union(r.Columns(c1), r.Columns(c2))
             
             ch.HasTitle = True 'включаем Имя диаграммы
-            ch.ChartTitle.Text = title_axis_r.Columns(c1).Cells(1, 1).Value + title_axis_r.Columns(c2).Cells(1, 1).Value 'Имя диаграммы
+            ch.ChartTitle.Text = title_axis_r.Columns(c1).Cells(1, 1).Value + "--" + title_axis_r.Columns(c2).Cells(1, 1).Value 'Имя диаграммы
 
             
             ch.HasLegend = False 'выключаем отображение легенды
