@@ -1,0 +1,81 @@
+Sub pair_plot()
+
+Dim r As Range 'данные
+Dim title_axis_r As Range 'заголовки осей
+Dim title_r As Range 'заголовки диаграммы
+Dim c1 As Long 'индекс первой колонки из пары
+Dim c2 As Long 'индекс второй колонки из пары
+Dim ch As Chart 'имя переменной графика
+Dim start As String 'начальная ячейка для построения графика
+Dim start_col As String 'стартовая колонка
+Dim finish_col As String 'финишная колонка
+Dim row_title As String 'строка заголовков диаграмм
+Dim row_title_axis As String 'строка заголовков осей
+Dim title_r_str As String 'заголовки диаграммы в виде строки
+Dim title_axis_r_str As String 'заголовки осей в виде строки
+Dim r_str As String 'данные в виде строки
+Dim row_start_r_str As String 'стартовая строка данных
+Dim row_finish_r_str As String 'финишная строка данных
+Dim row As Long 'отступаем row строк для построения графика
+
+
+start_col = "B" 'стартовая колонка
+finish_col = "J" 'финишная колонка
+row_title = "1" 'строка заголовков диаграмм
+row_title_axis = "2" 'строка заголовков осей
+row_start_r_str = "3" 'стартовая строка данных
+row_finish_r_str = "25" 'финишная строка данных
+row = 3 'отступаем row строк для построения графика
+row = CLng(row_finish_r_str) + row 'добавляем row строк для построения графика
+start = start_col + CStr(row) 'начальная ячейка для построения графика
+
+title_r_str = start_col + row_title + ":" + finish_col + row_title 'заголовки диаграммы в виде строки
+title_axis_r_str = start_col + row_title_axis + ":" + finish_col + row_title_axis 'заголовки осей в виде строки
+r_str = start_col + row_start_r_str + ":" + finish_col + row_finish_r_str 'данные в виде строки
+
+Set title_r = Range(title_r_str) 'заголовки диаграммы
+Set title_axis_r = Range(title_axis_r_str) 'заголовки осей
+Set r = Range(r_str) 'данные
+
+
+'topPos = 50 'начальная позиция по вертикали
+'leftPos = 50 'начальная позиция по горизонтали
+topPos = Range(start).Top 'координата Top начальная ячейка для построения графика
+leftPos = Range(start).Left 'координата Left начальная ячейка для построения графика
+
+For c1 = 1 To r.Columns.Count
+    For c2 = c1 + 1 To r.Columns.Count
+        If c1 <> c2 Then
+            Set ch = ActiveSheet.Shapes.AddChart(Width:=300, Height:=200, Left:=leftPos, Top:=topPos).Chart
+            ch.ChartType = xlXYScatter
+            ch.SetSourceData Source:=Union(r.Columns(c1), r.Columns(c2))
+            
+            ch.HasTitle = True 'включаем Имя диаграммы
+            ch.ChartTitle.Text = title_axis_r.Columns(c1).Cells(1, 1).Value + "--" + title_axis_r.Columns(c2).Cells(1, 1).Value 'Имя диаграммы
+
+            
+            ch.HasLegend = False 'выключаем отображение легенды
+            'ch.HasLegend = True 'включаем отображение легенды
+            'ch.Legend.Position = xlLegendPositionBottom 'устанавливаем расположение легенды внизу
+            'ch.Legend.Position = xlLegendPositionRight 'устанавливаем расположение легенды справа
+            'ch.Legend.Font.Size = 12 'устанавливаем размер шрифта для легенды
+
+            ch.Axes(xlCategory).HasTitle = True 'включаем отображение заголовка оси X
+            ch.Axes(xlCategory).AxisTitle.Characters.Text = title_axis_r.Columns(c1).Cells(1, 1).Value 'устанавливаем текст заголовка оси X
+        
+            ch.Axes(xlValue).HasTitle = True 'включаем отображение заголовка оси Y
+            ch.Axes(xlValue).AxisTitle.Orientation = xlHorizontal 'направления текста на горизонтальный
+            ch.Axes(xlValue).AxisTitle.Characters.Text = title_axis_r.Columns(c2).Cells(1, 1).Value 'устанавливаем текст заголовка оси Y
+            
+            topPos = topPos + 200 'увеличиваем значение по вертикали для следующей диаграммы
+        
+        End If
+    Next c2
+    
+    leftPos = leftPos + 300 'увеличиваем значение по горизонтали для следующей пары столбцов
+    'topPos = 50 'сбрасываем значение по вертикали для следующей пары столбцов
+    topPos = Range(start).Top 'сбрасываем значение по вертикали для следующей пары столбцов
+    
+Next c1
+
+End Sub
