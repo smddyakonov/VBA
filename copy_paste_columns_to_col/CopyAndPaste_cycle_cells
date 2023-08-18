@@ -12,8 +12,8 @@ Sub CopyAndPaste_cycle_cells()
 
     
     'замените на нужный диапазон
-    start_cell = "B112"
-    finish_cell = "AI121"
+    start_cell = "A1"
+    finish_cell = "C3"
     start_col = Range(start_cell).Column
     start_row = Range(start_cell).Row
     finish_col = Range(finish_cell).Column
