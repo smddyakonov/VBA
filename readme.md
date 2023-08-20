@@ -5,3 +5,7 @@
 ## copy_paste_columns_to_col'A'
  - стекает колонки в колонку "A"
  - https://github.com/smddyakonov/VBA/tree/main/copy_paste_columns_to_col
+
+## corr_matrix
+ - матрица корреляций
+ - https://github.com/smddyakonov/VBA/tree/main/corr_matrix
