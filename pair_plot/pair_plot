@@ -21,13 +21,13 @@ Sub pair_plot()
     
     lin_tred_metka = True 'задать метку линии тренда
 
-    start_col = "D" 'стартовая колонка
-    finish_col = "H" 'финишная колонка
-    row_title = "2" 'строка заголовков диаграмм
+    start_col = "B" 'стартовая колонка
+    finish_col = "K" 'финишная колонка
+    row_title = "1" 'строка заголовков диаграмм
     row_title_axis = "2" 'строка заголовков осей
     row_start_r_str = "3" 'стартовая строка данных
-    row_finish_r_str = "76" 'финишная строка данных
-    row = 200 'отступаем row строк для построения графика
+    row_finish_r_str = "25" 'финишная строка данных
+    row = 3 'отступаем row строк для построения графика
     row = CLng(row_finish_r_str) + row 'добавляем row строк для построения графика
     start = start_col + CStr(row) 'начальная ячейка для построения графика
 
@@ -93,3 +93,4 @@ Sub pair_plot()
     Next c1
 
 End Sub
+
