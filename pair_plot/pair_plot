@@ -17,7 +17,7 @@ Sub pair_plot()
     Dim row_start_r_str As String 'стартовая строка данных
     Dim row_finish_r_str As String 'финишная строка данных
     Dim row As Long 'отступаем row строк для построения графика
-    Dim lin_tred_metka As Boolean 'метка линиитренда, если lin_tred_metka = True, орисовать линию, иначе не отрисовывать
+    Dim lin_tred_metka As Boolean 'метка линии тренда, если lin_tred_metka = True, отрисовать линию, иначе не отрисовывать
     
     lin_tred_metka = True 'задать метку линии тренда
 
