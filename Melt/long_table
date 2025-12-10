@@ -5,6 +5,7 @@ Option Explicit
 ' long-таблица
 Sub WideToLong_FromInputRanges()
     Dim srcWs As Worksheet
+    Dim wb As Workbook
     Dim rngMods As Range      ' диапазон с модификациями (заголовки столбцов)
     Dim rngParams As Range    ' диапазон с наименованиями параметров (один столбец)
     Dim rngValues As Range    ' диапазон со значениями (матрица)
@@ -17,7 +18,9 @@ Sub WideToLong_FromInputRanges()
     Dim paramName As String
     Dim valText As String
     
-    Set srcWs = ActiveSheet   ' работаем с текущим листом
+    ' работаем с АКТИВНЫМ листом (может быть в другой книге)
+    Set srcWs = ActiveSheet
+    Set wb = srcWs.Parent      ' книга, в которой лежит исходный лист (например, "Mvlticae-15")
     
     ' --- выбираем диапазоны ---
     On Error Resume Next
@@ -53,7 +56,7 @@ Sub WideToLong_FromInputRanges()
         Exit Sub
     End If
     
-    ' --- создаём лист <имя_текущего_листа>_long ---
+    ' --- создаём лист <имя_текущего_листа>_long В ЭТОЙ ЖЕ КНИГЕ ---
     outName = srcWs.Name & "_long"
     If Len(outName) > 31 Then
         outName = Left(outName, 31)
@@ -61,11 +64,11 @@ Sub WideToLong_FromInputRanges()
     
     On Error Resume Next
     Application.DisplayAlerts = False
-    ThisWorkbook.Worksheets(outName).Delete   ' если был - удалим
+    wb.Worksheets(outName).Delete   ' если лист уже был в этой книге — удалим
     Application.DisplayAlerts = True
     On Error GoTo 0
     
-    Set wsOut = ThisWorkbook.Worksheets.Add(After:=srcWs)
+    Set wsOut = wb.Worksheets.Add(After:=srcWs)
     wsOut.Name = outName
     
     ' --- заголовки ---
@@ -93,5 +96,6 @@ Sub WideToLong_FromInputRanges()
         Next r
     Next c
     
-    MsgBox "Готово! Результат на листе: " & wsOut.Name, vbInformation
+    MsgBox "Готово! Результат на листе: " & wsOut.Name & " в книге " & wb.Name, vbInformation
 End Sub
+
