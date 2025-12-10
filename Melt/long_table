@@ -1,0 +1,97 @@
+Процедура делает "широкую" таблицу в "длинную"
+
+Option Explicit
+
+' long-таблица
+Sub WideToLong_FromInputRanges()
+    Dim srcWs As Worksheet
+    Dim rngMods As Range      ' диапазон с модификациями (заголовки столбцов)
+    Dim rngParams As Range    ' диапазон с наименованиями параметров (один столбец)
+    Dim rngValues As Range    ' диапазон со значениями (матрица)
+    
+    Dim wsOut As Worksheet
+    Dim outName As String
+    Dim r As Long, c As Long
+    Dim outRow As Long
+    Dim modName As String
+    Dim paramName As String
+    Dim valText As String
+    
+    Set srcWs = ActiveSheet   ' работаем с текущим листом
+    
+    ' --- выбираем диапазоны ---
+    On Error Resume Next
+    
+    Set rngMods = Application.InputBox( _
+        Prompt:="Выделите диапазон с МОДИФИКАЦИЯМИ (строка с СВХ-15, СВГ-15 и т.п.)", _
+        Title:="Диапазон модификаций", _
+        Type:=8)
+    If rngMods Is Nothing Then Exit Sub
+    
+    Set rngParams = Application.InputBox( _
+        Prompt:="Выделите диапазон с НАИМЕНОВАНИЯМИ ПАРАМЕТРОВ (один столбец)", _
+        Title:="Диапазон параметров", _
+        Type:=8)
+    If rngParams Is Nothing Then Exit Sub
+    
+    Set rngValues = Application.InputBox( _
+        Prompt:="Выделите диапазон со ЗНАЧЕНИЯМИ (таблица значений для модификаций)", _
+        Title:="Диапазон значений", _
+        Type:=8)
+    If rngValues Is Nothing Then Exit Sub
+    
+    On Error GoTo 0
+    
+    ' --- проверки размеров ---
+    If rngParams.Rows.Count <> rngValues.Rows.Count Then
+        MsgBox "Количество строк в диапазоне параметров и значений не совпадает!", vbCritical
+        Exit Sub
+    End If
+    
+    If rngMods.Columns.Count <> rngValues.Columns.Count Then
+        MsgBox "Количество столбцов модификаций и значений не совпадает!", vbCritical
+        Exit Sub
+    End If
+    
+    ' --- создаём лист <имя_текущего_листа>_long ---
+    outName = srcWs.Name & "_long"
+    If Len(outName) > 31 Then
+        outName = Left(outName, 31)
+    End If
+    
+    On Error Resume Next
+    Application.DisplayAlerts = False
+    ThisWorkbook.Worksheets(outName).Delete   ' если был - удалим
+    Application.DisplayAlerts = True
+    On Error GoTo 0
+    
+    Set wsOut = ThisWorkbook.Worksheets.Add(After:=srcWs)
+    wsOut.Name = outName
+    
+    ' --- заголовки ---
+    wsOut.Cells(1, 1).Value = "Modification"
+    wsOut.Cells(1, 2).Value = "ParamName"
+    wsOut.Cells(1, 3).Value = "Value"
+    
+    outRow = 2
+    
+    ' --- основной цикл ---
+    For c = 1 To rngMods.Columns.Count
+        modName = CStr(rngMods.Cells(1, c).Value)
+        
+        For r = 1 To rngParams.Rows.Count
+            paramName = CStr(rngParams.Cells(r, 1).Value)
+            valText = CStr(rngValues.Cells(r, c).Value)
+            
+            ' можно фильтровать пустые строки
+            If Len(Trim(paramName)) > 0 Or Len(Trim(valText)) > 0 Then
+                wsOut.Cells(outRow, 1).Value = modName
+                wsOut.Cells(outRow, 2).Value = paramName
+                wsOut.Cells(outRow, 3).Value = valText
+                outRow = outRow + 1
+            End If
+        Next r
+    Next c
+    
+    MsgBox "Готово! Результат на листе: " & wsOut.Name, vbInformation
+End Sub
