@@ -1,8 +1,7 @@
-Процедура делает "широкую" таблицу в "длинную"
-
 Option Explicit
 
 ' long-таблица
+' модификации по СТОЛБЦАМ, параметры по СТРОКАМ
 Sub WideToLong_FromInputRanges()
     Dim srcWs As Worksheet
     Dim wb As Workbook
@@ -18,10 +17,6 @@ Sub WideToLong_FromInputRanges()
     Dim paramName As String
     Dim valText As String
     
-    ' работаем с АКТИВНЫМ листом (может быть в другой книге)
-    Set srcWs = ActiveSheet
-    Set wb = srcWs.Parent      ' книга, в которой лежит исходный лист (например, "Mvlticae-15")
-    
     ' --- выбираем диапазоны ---
     On Error Resume Next
     
@@ -30,6 +25,10 @@ Sub WideToLong_FromInputRanges()
         Title:="Диапазон модификаций", _
         Type:=8)
     If rngMods Is Nothing Then Exit Sub
+    
+    ' после выбора rngMods знаем, в КАКОЙ книге и на КАКОМ листе работаем
+    Set srcWs = rngMods.Worksheet
+    Set wb = srcWs.Parent      ' это и будет, например, 'Mvlticae-15.xlsx'
     
     Set rngParams = Application.InputBox( _
         Prompt:="Выделите диапазон с НАИМЕНОВАНИЯМИ ПАРАМЕТРОВ (один столбец)", _
@@ -98,4 +97,3 @@ Sub WideToLong_FromInputRanges()
     
     MsgBox "Готово! Результат на листе: " & wsOut.Name & " в книге " & wb.Name, vbInformation
 End Sub
-
